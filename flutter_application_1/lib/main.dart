@@ -27,8 +27,11 @@ class MyStatefulWidget extends StatefulWidget {
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   List<int> top = <int>[];
   List<int> bottom = <int>[0];
-  int max = 20;
   String task = 'Click the button and find out!';
+  final ScrollController listScrollController = ScrollController();
+  var colors = [Colors.tealAccent[400], Colors.blueGrey[800]];
+  var rolls = List<int>.generate(20, (i) => i + 1);
+  var list = List<int>.generate(20, (i) => i + 1);
   var powerUps = ['', '', '', '', '', ''];
   var yourUps = '';
   var num = 0;
@@ -41,9 +44,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                           The game ends when all numbers have been rolled. 
                           Goodluck and have fun!'''
   ];
-  var colors = [Colors.tealAccent[400], Colors.blueGrey[800]];
-  var rolls = List<int>.generate(20, (i) => i + 1);
-  var list = List<int>.generate(20, (i) => i + 1);
   var tasks = {
     1: 'Finish your drink then tell us an embarrasing secret',
     2: 'Take 2 shots- double critical failure :(',
@@ -66,6 +66,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     19: 'Free space- Kara gives you a cracker/ pretzal',
     20: 'OJs Immunity! Negate one future task',
   };
+  int max = 20;
 
   void checkDone() {
     if (list.isEmpty) {
@@ -101,12 +102,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
-    const Key centerKey = ValueKey<String>('bottom-sliver-list');
+    const Key bottomKey = ValueKey<String>('bottom-sliver-list');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Roll the Dice!'),
         leading: IconButton(
-          icon: const Icon(Icons.gamepad),
+          icon: const Icon(Icons.play_arrow_sharp),
           onPressed: () {
             setState(() {
               index++;
@@ -136,14 +137,18 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                           Your potential rolls: $rolls 
                           Numbers Remaining: $list''');
             });
+            if (listScrollController.hasClients) {
+              final position = listScrollController.position.maxScrollExtent;
+              listScrollController.jumpTo(position + 200);
+            }
           },
         ),
       ),
       body: CustomScrollView(
-        center: centerKey, //centers on the centerkey
+        //center: bottomKey, //centers on the centerkey
+        controller: listScrollController,
         slivers: <Widget>[
           SliverList(
-            key: centerKey, //I have the centerkey and I am king
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
                 //for loop to make stuff
@@ -158,6 +163,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             ),
           ),
           SliverList(
+            key: bottomKey,
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
                 return Container(
