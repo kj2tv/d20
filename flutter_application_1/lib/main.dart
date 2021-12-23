@@ -1,44 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
 import 'dart:math';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  static const String _title = 'D20 ';
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Welcome To Flutter'),
+    return const MaterialApp(
+      title: _title,
+      home: MyStatefulWidget(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-  // Fields in a Widget subclass are always marked "final".
-  final String title;
+class MyStatefulWidget extends StatefulWidget {
+  const MyStatefulWidget({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+  List<int> top = <int>[];
+  List<int> bottom = <int>[0];
   int max = 20;
   String task = 'Click the button and find out!';
   var powerUps = ['', '', '', '', '', ''];
   var yourUps = '';
   var num = 0;
   var history = [];
-  var histLength = 0;
   var turn = 0;
+  var colors = [Colors.tealAccent[400], Colors.blueGrey[800]];
   var rolls = List<int>.generate(20, (i) => i + 1);
   var list = List<int>.generate(20, (i) => i + 1);
   var tasks = {
@@ -64,43 +60,6 @@ class _MyHomePageState extends State<MyHomePage> {
     20: 'OJs Immunity! Negate one future task',
   };
 
-  void _buttonPress() {
-    setState(() {
-      num = rolls[Random().nextInt(rolls.length)];
-      history.add(num);
-      histLength = history.length;
-      turn = (histLength % 4) + 1;
-      task = tasks[num].toString();
-      if (list.contains(num)) {
-        list.remove(num);
-        checkDone();
-      }
-      print(num);
-      if (num == 4 || num == 17 || num == 18 || num == 20) {
-        powerUps[turn] += task + '\n';
-      }
-      // yourUps = powerUps[turn].toString();
-      // if (yourUps.contains('three')) {
-      //   print('ups had 3');
-      //   yourUps = yourUps.replaceAll('three', 'two');
-      // }
-      // if (yourUps.contains('two')) {
-      //   print('ups had 2');
-      //   yourUps = yourUps.replaceAll('two', 'one');
-      // }
-      // if (yourUps.contains('one')) {
-      //   print('ups had 1');
-      //   yourUps = yourUps.replaceAll(
-      //       tasks[num].toString().replaceFirst('three', 'one'), '');
-      // } else {}
-
-      var hits = history.where((element) => element == num);
-      if (hits.length == 5) {
-        rolls.remove(num);
-      }
-    });
-  }
-
   void checkDone() {
     if (list.isEmpty) {
       showAlertDialog(context);
@@ -116,9 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: const Text("Congradulations!"),
+      title: const Text("Congraddddulations!"),
       content: const Text(
-          "You have travalled through the forest and across the river styx. Well done sir of madame. Goodulck in your travels."),
+          "You have traveled through the forest and across the river styx. Well done sir of madame. Goodulck in your travels."),
       actions: [
         okButton,
       ],
@@ -135,50 +94,87 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called
+    const Key centerKey = ValueKey<String>('bottom-sliver-list');
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          // mainAxisAlignment centers children vertically; the main axis and the cross axis
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Your Number: $num\t',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            Text(
-              'Your Task: $task\t',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            Text(
-              'Numbers remaining: $list \n',
-            ),
-            Text(
-              'Your Potential rolls: $rolls\n',
-            ),
-            Text(
-              'Turns Taken: $histLength',
-            ),
-            Text(
-              'Whos up? Person #$turn',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            Text(
-              'Power Ups: $yourUps',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+        title: const Text('Roll the Dice!'),
+        leading: IconButton(
+          icon: const Icon(Icons.gamepad),
+          onPressed: () {
+            setState(() {
+              bottom.add(bottom.length);
+              debugPrint('bottom: $bottom roll: ');
+              num = rolls[Random().nextInt(rolls.length)];
+              history.add(num);
+              //turn = (history.length % 4) + 1;
+              task = tasks[num].toString();
+              if (list.contains(num)) {
+                list.remove(num);
+                checkDone();
+              }
+              if (num == 4 || num == 17 || num == 18 || num == 20) {
+                powerUps[turn] += task + '\n';
+              }
+
+              var hits = history.where((element) => element == num);
+              if (hits.length == 5) {
+                rolls.remove(num);
+              }
+            });
+          },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: _buttonPress,
-          tooltip: 'Roll the dice!',
-          child: const Icon(Icons
-              .games_sharp)), // This trailing comma makes auto-formatting nicer for build methods.
+      body: CustomScrollView(
+        center: centerKey, //centers on the centerkey
+        slivers: <Widget>[
+          SliverList(
+            key: centerKey, //I have the centerkey and I am king
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                //for loop to make stuff
+                return Container(
+                  alignment: Alignment.center,
+                  color: Colors.blue[200 + top[index] % 4 * 100],
+                  height: 100 + top[index] % 4 * 20.0,
+                  child: Text('Roll: ${top[index]}'),
+                );
+              },
+              childCount: top.length,
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10.0),
+                  color: index % 2 == 1 ? colors[0] : colors[1],
+                  height: index == 0 ? 100 : 200,
+                  child: index == 0
+                      ? const Text(
+                          '''Hello there! Good day! Welcome! Salutations! Top of the mornin! Top of the mornin! Top of the mornin! 
+                          So this game is pretty simple: roll the dice up there to the left, I'll tell you to do something, you do it. 
+                          The game ends when all numbers have been rolled. 
+                          Goodluck and have fun!''',
+                          style: TextStyle(
+                              fontSize: 16, color: Colors.lightBlueAccent))
+                      : index % 2 == 1
+                          ? Text('''Roll# ${bottom[index]}
+                          Hello Player $turn
+                          Your task is: $task 
+                          Your power-ups are: $yourUps
+                          Your potential rolls: $rolls 
+                          Numbers Remaining: $list''',
+                              style: const TextStyle(color: Colors.black))
+                          : Text('Roll# ${bottom[index]}',
+                              style: const TextStyle(color: Colors.white)),
+                );
+              },
+              childCount: bottom.length,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
