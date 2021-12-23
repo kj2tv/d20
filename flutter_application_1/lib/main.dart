@@ -32,8 +32,15 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   var powerUps = ['', '', '', '', '', ''];
   var yourUps = '';
   var num = 0;
+  var index = 0;
   var history = [];
   var turn = 0;
+  var display = [
+    '''Hello there! Good day! Welcome! Salutations! Top of the mornin! Top of the mornin! Top of the mornin! 
+                          So this game is pretty simple: roll the dice up there to the left, I'll tell you to do something, you do it. 
+                          The game ends when all numbers have been rolled. 
+                          Goodluck and have fun!'''
+  ];
   var colors = [Colors.tealAccent[400], Colors.blueGrey[800]];
   var rolls = List<int>.generate(20, (i) => i + 1);
   var list = List<int>.generate(20, (i) => i + 1);
@@ -102,11 +109,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           icon: const Icon(Icons.gamepad),
           onPressed: () {
             setState(() {
+              index++;
               bottom.add(bottom.length);
               debugPrint('bottom: $bottom roll: ');
               num = rolls[Random().nextInt(rolls.length)];
               history.add(num);
-              //turn = (history.length % 4) + 1;
+              turn = history.length % 4;
               task = tasks[num].toString();
               if (list.contains(num)) {
                 list.remove(num);
@@ -120,6 +128,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               if (hits.length == 5) {
                 rolls.remove(num);
               }
+              display.add('''Roll# $index
+                          Hello Player $turn
+                          Your role: $num
+                          Your task is: $task 
+                          Your power-ups are: $yourUps
+                          Your potential rolls: $rolls 
+                          Numbers Remaining: $list''');
             });
           },
         ),
@@ -151,22 +166,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   color: index % 2 == 1 ? colors[0] : colors[1],
                   height: index == 0 ? 100 : 200,
                   child: index == 0
-                      ? const Text(
-                          '''Hello there! Good day! Welcome! Salutations! Top of the mornin! Top of the mornin! Top of the mornin! 
-                          So this game is pretty simple: roll the dice up there to the left, I'll tell you to do something, you do it. 
-                          The game ends when all numbers have been rolled. 
-                          Goodluck and have fun!''',
-                          style: TextStyle(
+                      ? Text(display[index],
+                          style: const TextStyle(
                               fontSize: 16, color: Colors.lightBlueAccent))
                       : index % 2 == 1
-                          ? Text('''Roll# ${bottom[index]}
-                          Hello Player $turn
-                          Your task is: $task 
-                          Your power-ups are: $yourUps
-                          Your potential rolls: $rolls 
-                          Numbers Remaining: $list''',
+                          ? Text(display[index],
                               style: const TextStyle(color: Colors.black))
-                          : Text('Roll# ${bottom[index]}',
+                          : Text(display[index],
                               style: const TextStyle(color: Colors.white)),
                 );
               },
