@@ -29,7 +29,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   List<int> bottom = <int>[0];
   String task = 'Click the button and find out!';
   final ScrollController listScrollController = ScrollController();
-  var colors = [Colors.tealAccent[400], Colors.blueGrey[800]];
+  var colors = [
+    Colors.blueGrey,
+    Colors.blueGrey,
+    Colors.lightBlueAccent,
+    Colors.black
+  ];
   var rolls = List<int>.generate(20, (i) => i + 1);
   var list = List<int>.generate(20, (i) => i + 1);
   var powerUps = ['', '', '', '', '', ''];
@@ -38,33 +43,54 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   var index = 0;
   var history = [];
   var turn = 0;
-  var display = [
+  /*var display = [
     '''Hello there! Good day! Welcome! Salutations! Top of the mornin! Top of the mornin! Top of the mornin! 
                           So this game is pretty simple: roll the dice up there to the left, I'll tell you to do something, you do it. 
                           The game ends when all numbers have been rolled. 
                           Goodluck and have fun!'''
+  ];*/
+  var display = [
+    <TextSpan>[
+      const TextSpan(
+          text:
+              'Hello there! Good day! Welcome! Salutations! Top of the mornin! Top of the mornin! Top of the mornin!',
+          style: TextStyle(fontSize: 18, color: Colors.lightBlueAccent)),
+      const TextSpan(
+          text:
+              '\nSo this game is pretty simple: roll the dice up there to the left, I\'ll tell you to do something, you do it.',
+          style: TextStyle(fontSize: 18, color: Colors.lightBlueAccent)),
+      const TextSpan(
+          text: '\nThe game ends when all numbers have been rolled.',
+          style: TextStyle(
+              fontSize: 18,
+              color: Colors.lightGreenAccent,
+              fontWeight: FontWeight.bold)),
+      const TextSpan(
+          text: '\nGoodluck and have fun!',
+          style: TextStyle(fontSize: 18, color: Colors.lightBlueAccent)),
+    ]
   ];
   var tasks = {
     1: 'Finish your drink then tell us an embarrasing secret',
     2: 'Take 2 shots- double critical failure :(',
-    3: 'Take 3 shots! Jk swap shirts with someone or shotgun an alcohol- if youre high voicing you have to lick the floor ',
-    4: 'Next three turns you have to do double the number of drinks',
-    5: 'Give a hot take - if everyone or no one agrees you have to take a shot',
-    6: 'Coin stop- if you fail do 10 sit ups, else give someone 1 shot',
-    7: 'Change the song to anything you want- if it sucks by unanimous decision you take a shot',
+    3: 'Take 3 shots! Jk swap shirts with someone or shotgun an alcohol',
+    4: 'All bros drink 4 times - easy peasy',
+    5: 'All non bros drink 3 times - justice',
+    6: 'Give a hot take - if everyone or no one agrees you have to take a shot',
+    7: 'The person with the fullest cup take 5 drinks',
     8: 'Everyone nominate a person to drink 3 times- ties mean all winners drink',
-    9: 'Three flip cups in 15 seconds of take 5 sips',
+    9: 'Choose a victim. Play them in ninja. Loser takes a shot.',
     10: 'Rock Paper Scissors with a person to your right- loser takes a shot of the winners choice',
-    11: 'Get a new drink and everyone must drink your old drink',
-    12: 'Donkey Balls - loser takes a shot',
+    11: 'Get a new drink and everyone (collectively) must drink your old drink',
+    12: 'The team must shotgun a beer. Dont care how its done, what trades are necessary, how many drinkers. Just DO IT.',
     13: 'Categories- loser takes a shot',
-    14: 'Ask a trivia question to the person to your right- if they get it right you drink, else they drink',
-    15: 'Truth or Die - if you die finish your drink',
+    14: 'Ask a trivia question to the person to your right- loser takes a drink',
+    15: 'Hot seat - everyone asks you one question, respond or finish your drink',
     16: 'Tell us a joke- if no one laughs you leave... or your take 10 drinks',
-    17: 'Drink half the drinks the next three turns',
-    18: 'Substitution Jutsu! Swap any future turn with the person to your right',
-    19: 'Free space- Kara gives you a cracker/ pretzal',
-    20: 'OJs Immunity! Negate one future task',
+    17: 'Choose a nickname for the rest of the game- if anyone doesn\'t call you that they drink',
+    18: 'Substitution Jutsu! Swap your next turn with the person to your right if you like',
+    19: 'Free space- you get a high five from the person of your choosing',
+    20: 'OJs Immunity! Negate someone else\'s future task',
   };
   int max = 20;
 
@@ -115,7 +141,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               debugPrint('bottom: $bottom roll: ');
               num = rolls[Random().nextInt(rolls.length)];
               history.add(num);
-              turn = history.length % 4;
+              turn = (history.length - 1) % 5 + 1;
               task = tasks[num].toString();
               if (list.contains(num)) {
                 list.remove(num);
@@ -129,13 +155,41 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               if (hits.length == 5) {
                 rolls.remove(num);
               }
-              display.add('''Roll# $index
-                          Hello Player $turn
-                          Your role: $num
-                          Your task is: $task 
-                          Your power-ups are: $yourUps
-                          Your potential rolls: $rolls 
-                          Numbers Remaining: $list''');
+              //Your power-ups are: $yourUps
+              /*display.add('Roll# $index'
+                          'Hello Player $turn'
+                          'Your role: $num'
+                          'Your task is: $task' 
+                          'Your potential rolls: $rolls' 
+                          'Numbers Remaining: $list'); */
+              display.add(<TextSpan>[
+                TextSpan(
+                    text: 'Roll# $index   -   Player $turn',
+                    style: const TextStyle(
+                        fontSize: 20, color: Colors.lightBlueAccent)),
+                TextSpan(
+                    text: '\nYou rolled a $num',
+                    style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.lightGreenAccent,
+                        fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: '\nYour task is: $task',
+                    style: const TextStyle(
+                        fontSize: 22,
+                        color: Colors.lightGreenAccent,
+                        fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: '\nNumbers Remaining: $list',
+                    style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.lightGreenAccent,
+                        fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: '\nYour potential rolls: $rolls',
+                    style: const TextStyle(
+                        fontSize: 16, color: Colors.lightBlueAccent)),
+              ]);
             });
             if (listScrollController.hasClients) {
               final position = listScrollController.position.maxScrollExtent;
@@ -167,20 +221,16 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
                 return Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10.0),
-                  color: index % 2 == 1 ? colors[0] : colors[1],
-                  height: index == 0 ? 100 : 200,
-                  child: index == 0
-                      ? Text(display[index],
-                          style: const TextStyle(
-                              fontSize: 16, color: Colors.lightBlueAccent))
-                      : index % 2 == 1
-                          ? Text(display[index],
-                              style: const TextStyle(color: Colors.black))
-                          : Text(display[index],
-                              style: const TextStyle(color: Colors.white)),
-                );
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.all(10.0),
+                    color: index % 2 == 1 ? colors[0] : colors[1],
+                    height: index == 0 ? 150 : 200,
+                    child: index == 0
+                        ? RichText(text: TextSpan(children: display[index]))
+                        : index % 2 == 1
+                            ? RichText(text: TextSpan(children: display[index]))
+                            : RichText(
+                                text: TextSpan(children: display[index])));
               },
               childCount: bottom.length,
             ),
