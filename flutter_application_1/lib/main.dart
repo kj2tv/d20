@@ -30,13 +30,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   String task = 'Click the button and find out!';
   final ScrollController listScrollController = ScrollController();
   var colors = [
-    Colors.blueGrey,
-    Colors.blueGrey,
+    Colors.blueGrey[700],
+    Colors.blueGrey[700],
     Colors.lightBlueAccent,
     Colors.black
   ];
-  var rolls = List<int>.generate(20, (i) => i + 1);
-  var list = List<int>.generate(20, (i) => i + 1);
+  var rolls =
+      List<int>.generate(20, (i) => i + 1); //to change num tasks change here
+  var list = List<int>.generate(20, (i) => i + 1); //and here
   var powerUps = ['', '', '', '', '', ''];
   var yourUps = '';
   var num = 0;
@@ -51,46 +52,50 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   ];*/
   var display = [
     <TextSpan>[
-      const TextSpan(
+      TextSpan(
           text:
               'Hello there! Good day! Welcome! Salutations! Top of the mornin! Top of the mornin! Top of the mornin!',
-          style: TextStyle(fontSize: 18, color: Colors.lightBlueAccent)),
-      const TextSpan(
+          style: TextStyle(fontSize: 18, color: Colors.red[200])),
+      TextSpan(
           text:
               '\nSo this game is pretty simple: roll the dice up there to the left, I\'ll tell you to do something, you do it.',
-          style: TextStyle(fontSize: 18, color: Colors.lightBlueAccent)),
+          style: TextStyle(fontSize: 18, color: Colors.red[200])),
       const TextSpan(
           text: '\nThe game ends when all numbers have been rolled.',
           style: TextStyle(
-              fontSize: 18,
-              color: Colors.lightGreenAccent,
-              fontWeight: FontWeight.bold)),
-      const TextSpan(
+            fontSize: 24,
+            color: Colors.lightGreenAccent,
+          )),
+      TextSpan(
           text: '\nGoodluck and have fun!',
-          style: TextStyle(fontSize: 18, color: Colors.lightBlueAccent)),
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.red[200],
+          ))
     ]
   ];
   var tasks = {
-    1: 'Finish your drink then tell us an embarrasing secret',
+    //and change size here
+    1: 'Finish your drink then take another turn, goodluck!',
     2: 'Take 2 shots- double critical failure :(',
-    3: 'Take 3 shots! Jk swap shirts with someone or shotgun an alcohol',
+    3: 'Take 3 shots! Jk plank until your next turn or take a shot',
     4: 'All bros drink 4 times - easy peasy',
-    5: 'All non bros drink 3 times - justice',
+    5: 'All non bros drink 3 times - unequal pay',
     6: 'Give a hot take - if everyone or no one agrees you have to take a shot',
     7: 'The person with the fullest cup take 5 drinks',
     8: 'Everyone nominate a person to drink 3 times- ties mean all winners drink',
-    9: 'Choose a victim. Play them in ninja. Loser takes a shot.',
+    9: 'Choose a victim. Play them in finger game. You decide the amount and you go first.',
     10: 'Rock Paper Scissors with a person to your right- loser takes a shot of the winners choice',
-    11: 'Get a new drink and everyone (collectively) must drink your old drink',
+    11: 'Choose a person to drink with you. Play waterfall. ',
     12: 'The team must shotgun a beer. Dont care how its done, what trades are necessary, how many drinkers. Just DO IT.',
     13: 'Categories- loser takes a shot',
-    14: 'Ask a trivia question to the person to your right- loser takes a drink',
-    15: 'Hot seat - everyone asks you one question, respond or finish your drink',
+    14: 'Ask a question about yourself to the person to your right- loser takes 5 drink',
+    15: 'Hot seat - everyone asks you one question, respond or finish your drink (each question)',
     16: 'Tell us a joke- if no one laughs you leave... or your take 10 drinks',
     17: 'Choose a nickname for the rest of the game- if anyone doesn\'t call you that they drink',
-    18: 'Substitution Jutsu! Swap your next turn with the person to your right if you like',
+    18: 'Substitution Jutsu! Choose someone to tell us a secret about themself or finish their drink',
     19: 'Free space- you get a high five from the person of your choosing',
-    20: 'OJs Immunity! Negate someone else\'s future task',
+    20: 'OJs Immunity! You don\'t have to drink until your next turn',
   };
   int max = 20;
 
@@ -152,7 +157,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               }
 
               var hits = history.where((element) => element == num);
-              if (hits.length == 5) {
+              if (hits.length == 3) {
                 rolls.remove(num);
               }
               //Your power-ups are: $yourUps
@@ -165,30 +170,28 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               display.add(<TextSpan>[
                 TextSpan(
                     text: 'Roll# $index   -   Player $turn',
-                    style: const TextStyle(
-                        fontSize: 20, color: Colors.lightBlueAccent)),
+                    style: TextStyle(fontSize: 20, color: Colors.red[200])),
                 TextSpan(
                     text: '\nYou rolled a $num',
-                    style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.lightGreenAccent,
-                        fontWeight: FontWeight.bold)),
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.red[200],
+                    )),
                 TextSpan(
                     text: '\nYour task is: $task',
                     style: const TextStyle(
-                        fontSize: 22,
-                        color: Colors.lightGreenAccent,
-                        fontWeight: FontWeight.bold)),
+                      fontSize: 30,
+                      color: Colors.lightGreenAccent,
+                    )),
                 TextSpan(
                     text: '\nNumbers Remaining: $list',
-                    style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.lightGreenAccent,
-                        fontWeight: FontWeight.bold)),
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.red[200],
+                    )),
                 TextSpan(
                     text: '\nYour potential rolls: $rolls',
-                    style: const TextStyle(
-                        fontSize: 16, color: Colors.lightBlueAccent)),
+                    style: TextStyle(fontSize: 20, color: Colors.red[200])),
               ]);
             });
             if (listScrollController.hasClients) {
